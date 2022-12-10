@@ -53,6 +53,8 @@ public class AnimateHuman : MonoBehaviour
     GameObject LeftLeg_top, LeftLeg_bottom;
     GameObject RightLeg_top, RightLeg_bottom;
 
+    GameObject character;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -147,6 +149,10 @@ public class AnimateHuman : MonoBehaviour
         angle = GetAngleFromXaxis(new Vector2(x, y));
         rotation = RightLeg_bottom.transform.localEulerAngles;
         RightLeg_bottom.transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 180 - angle + refAngle);
+
+        x = (GetPartX("left_hip") + GetPartX("right_hip")) / 2f;
+        print(x);
+        character.transform.position = new Vector3(x, 0, 0);
     }
 
     private void ShowKeypointStatus()
@@ -196,6 +202,7 @@ public class AnimateHuman : MonoBehaviour
         GameObject Spine = Armature.transform.Find("Spine").gameObject;
         GameObject ThighL = Armature.transform.Find("ThighL").gameObject;
         GameObject ThighR = Armature.transform.Find("ThighR").gameObject;
+        character = gameObject;
 
         Body = Spine;
         Head = Spine.transform.Find("Chest").Find("Neck").gameObject;
@@ -289,58 +296,6 @@ public class AnimateHuman : MonoBehaviour
             print(e.ToString());
         }
     }
-
-    private void ReceiveDataFromLocalhost()
-    {
-        try
-        {
-            int localport = 2119;
-            print("Waiting for connection");
-            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), localport);
-            listener.Start();
-
-            // Byte[] array for the transmitted data
-            Byte[] bytes = new Byte[1024];
-            while (true)
-            {
-                using (client = listener.AcceptTcpClient())
-                {
-                    print("Client connected");
-                    using (NetworkStream stream = client.GetStream())
-                    {
-                        int length;
-                        while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                        {
-                            var incommingData = new byte[length];
-                            Array.Copy(bytes, 0, incommingData, 0, length);
-                            string clientMessage = Encoding.ASCII.GetString(incommingData);
-                            if (clientMessage.IndexOf("/") != -1)
-                            {
-                                //print(keypoints_with_scores);
-                                keypoints_with_scores = ParseData(clientMessage);
-                                bool isEveryPointValid = true;
-                                foreach (List<float> keypoint in keypoints_with_scores)
-                                {
-                                    if (keypoint[PROB] < THRESHOLD)
-                                    {
-                                        isEveryPointValid = false;
-                                        break;
-                                    }
-                                }
-                                if (isEveryPointValid) keypoints_with_scores_valid = keypoints_with_scores;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            // If something bad happened and threw an exception, just print out the error
-            print(e.ToString());
-        }
-    }
-
 
     private List<List<float>> ParseData(string data)
     {
