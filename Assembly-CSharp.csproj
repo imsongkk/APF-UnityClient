@@ -61,7 +61,7 @@
     <Compile Include="Assets\Scripts\Loading.cs" />
     <Compile Include="Assets\Scripts\InGameScene.cs" />
     <Compile Include="Assets\Scripts\LoadingScene.cs" />
-    <Compile Include="Assets\Scripts\AnimateHuman.cs" />
+    <Compile Include="Assets\Scripts\HumanController.cs" />
     <Compile Include="Assets\Scripts\MainScene.cs" />
   </ItemGroup>
   <ItemGroup>

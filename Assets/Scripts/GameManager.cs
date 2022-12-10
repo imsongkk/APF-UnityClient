@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get { Init(); return instance; } }
 
     public static Loading Loading { get; set; }
+    public static HumanController HumanController { get; set; }
 
     public static void Init()
     {
@@ -28,7 +29,12 @@ public class GameManager : MonoBehaviour
 
     public static void LoadComplete()
 	{
-        Loading.gameObject.SetActive(false);
+        Loading?.gameObject.SetActive(false);
         SceneManager.LoadScene("MainScene");
 	}
+
+    public static void WallCollision()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
 }

@@ -10,10 +10,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Globalization;
 
-public class AnimateHuman : MonoBehaviour
+public class HumanController : MonoBehaviour
 {
     bool isLoaded = false;
     bool alreadyLoaded = false;
+    bool isOver = false;
 
     // For processing keypoints
     const int X = 0;
@@ -64,19 +65,22 @@ public class AnimateHuman : MonoBehaviour
         InitTCP();
         InitGameObjects();
         InitKeypoints();
+
+        GameManager.HumanController = this;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isLoaded)
-            return;
+        if (!isLoaded) return;
 
         if (!alreadyLoaded)
         {
             alreadyLoaded = true;
             GameManager.LoadComplete();
         }
+
+        if (isOver) return;
 
         ShowKeypointStatus();
         SetHumanRotation();
@@ -163,7 +167,6 @@ public class AnimateHuman : MonoBehaviour
         RightLeg_bottom.transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 180 - angle + refAngle);
 
         x = (GetPartX("left_hip") + GetPartX("right_hip")) / 2f;
-        x *= 5f;
         //print(x);
         character.transform.position = new Vector3(x, 0, 0);
     }
@@ -338,5 +341,19 @@ public class AnimateHuman : MonoBehaviour
     {
         // Close the thread when the application quits
         receiveThread.Abort();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == LayerMask.NameToLayer("Wall")) // 벽에 충돌
+        {
+            GameManager.WallCollision();
+            isOver = true;
+        }
+    }
+
+    public void Resume()
+    {
+        isOver = false;
     }
 }
