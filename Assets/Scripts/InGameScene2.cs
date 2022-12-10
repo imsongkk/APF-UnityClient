@@ -10,6 +10,7 @@ public class InGameScene2 : MonoBehaviour
 	[SerializeField] TextMeshProUGUI scoreText;
 	[SerializeField] List<GameObject> walls = new List<GameObject>();
 
+	AudioSource source;
 	GameObject uiCamera;
 	int idx = 0;
 	float score = 0;
@@ -19,12 +20,15 @@ public class InGameScene2 : MonoBehaviour
 		uiCamera = GameObject.Find("OverUICamera");
 		uiCamera?.SetActive(false);
 
+		source = GetComponent<AudioSource>();
+
 		scoreText.text = $"Score : {string.Format("{0:0.00}", score)}";
 	}
 
 	bool needWall = true;
+	bool soundPlayed = false;
 
-    public void Update()
+	public void Update()
     {
 		if(needWall)
         {
@@ -37,10 +41,17 @@ public class InGameScene2 : MonoBehaviour
 		scoreText.text = $"Score : {string.Format("{0:0.00}", score)}";
 		walls[idx].transform.position += new Vector3(0, 0, -3f) * Time.deltaTime;
 
-		if(walls[idx].transform.position.z <= -2f)
+		if (walls[idx].transform.position.z <= 0f && !soundPlayed)
+		{
+			source.PlayOneShot(source.clip);
+			soundPlayed = true;
+		}
+
+		if (walls[idx].transform.position.z <= -2f)
         {
 			walls[idx].transform.position = new Vector3(0, 0, -15);
 			needWall = true;
+			soundPlayed = false;
         }
 	}
 

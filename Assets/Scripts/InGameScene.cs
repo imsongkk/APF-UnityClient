@@ -10,6 +10,7 @@ public class InGameScene : MonoBehaviour
 	[SerializeField] Button backButton;
 	[SerializeField] TextMeshProUGUI scoreText;
 	[SerializeField] List<GameObject> walls = new List<GameObject>();
+	AudioSource source;
 
 	GameObject uiCamera;
 	int idx = 0;
@@ -20,12 +21,15 @@ public class InGameScene : MonoBehaviour
 		uiCamera = GameObject.Find("OverUICamera");
 		uiCamera?.SetActive(false);
 
+		source = GetComponent<AudioSource>();
+
 		scoreText.text = $"Score : {score}";
 
 		backButton.onClick.AddListener(MainMenu);
 	}
 
 	bool needWall = true;
+	bool soundPlayed = false;
 
     public void Update()
     {
@@ -39,12 +43,19 @@ public class InGameScene : MonoBehaviour
 
 		walls[idx].transform.position += new Vector3(0, 0, -2f) * Time.deltaTime;
 
+		if(walls[idx].transform.position.z <= 0f && !soundPlayed)
+        {
+			source.PlayOneShot(source.clip);
+			soundPlayed = true;
+		}
+
 		if(walls[idx].transform.position.z <= -2f)
         {
 			walls[idx].transform.position = new Vector3(0, 0, -15);
 			score++;
 			scoreText.text = $"Score : {score}";
 			needWall = true;
+			soundPlayed = false;
         }
 	}
 
