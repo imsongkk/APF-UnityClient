@@ -15,7 +15,7 @@ public class MainScene : MonoBehaviour
 	{
 		startButton.onClick.AddListener(GameStart);
 		startButton2.onClick.AddListener(GameStart2);
-		startButton2.onClick.AddListener(Exit);
+		endButton.onClick.AddListener(Exit);
 	}
 
     private void Exit()
