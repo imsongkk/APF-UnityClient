@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public static GameManager Instance { get { Init(); return instance; } }
 
+    public static Loading Loading { get; set; }
+
     public static void Init()
     {
         if (instance == null)
@@ -22,4 +24,9 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(instance.gameObject);
         }
     }
+
+    public static void LoadComplete()
+	{
+        Loading.gameObject.SetActive(false);
+	}
 }

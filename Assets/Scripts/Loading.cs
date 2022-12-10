@@ -13,8 +13,12 @@ public class Loading : MonoBehaviour
     float animationTime = 1.0f;
     float deltaTime = 0.0f;
 
+	private void Start()
+	{
+        GameManager.Loading = this;
+	}
 
-    void Update()
+	void Update()
     {
         if (animationTime < deltaTime)
         {

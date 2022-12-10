@@ -12,6 +12,9 @@ using System.Globalization;
 
 public class AnimateHuman : MonoBehaviour
 {
+    bool isLoaded = false;
+    bool alreadyLoaded = false;
+
     // For processing keypoints
     const int X = 0;
     const int Y = 1;
@@ -66,6 +69,15 @@ public class AnimateHuman : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isLoaded)
+            return;
+
+        if (!alreadyLoaded)
+        {
+            alreadyLoaded = true;
+            GameManager.LoadComplete();
+        }
+
         ShowKeypointStatus();
         SetHumanRotation();
     }
@@ -151,7 +163,8 @@ public class AnimateHuman : MonoBehaviour
         RightLeg_bottom.transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 180 - angle + refAngle);
 
         x = (GetPartX("left_hip") + GetPartX("right_hip")) / 2f;
-        print(x);
+        x *= 5f;
+        //print(x);
         character.transform.position = new Vector3(x, 0, 0);
     }
 
@@ -162,7 +175,7 @@ public class AnimateHuman : MonoBehaviour
         {
             if (keypoint[PROB] > THRESHOLD) count++;
         }
-        print(count + "/" + 17 + " Keypoints detected");
+        //print(count + "/" + 17 + " Keypoints detected");
     }
 
     // Returns angle between given vector and x-axis
@@ -241,11 +254,16 @@ public class AnimateHuman : MonoBehaviour
                 {
                     tcpClient.Connect(IPAddress.Parse(ip), port);
                     print("Client connected");
+
                     using (NetworkStream stream = tcpClient.GetStream())
                     {
                         int length;
                         while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
                         {
+							if (!isLoaded)
+							{
+                                isLoaded = true;
+							}
                             var incommingData = new byte[length];
                             Array.Copy(bytes, 0, incommingData, 0, length);
                             string clientMessage_recv = Encoding.ASCII.GetString(incommingData);
@@ -273,7 +291,7 @@ public class AnimateHuman : MonoBehaviour
                                     }
                                     catch (Exception e)
                                     {
-                                        print(e);
+                                        //print(e);
                                         isEveryPointValid = false;
                                         isDataValid = false;
                                     }
