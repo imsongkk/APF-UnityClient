@@ -849,6 +849,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startButton: {fileID: 655052762}
+  startButton2: {fileID: 625800466}
+  endButton: {fileID: 120795540}
 --- !u!1 &1355757088
 GameObject:
   m_ObjectHideFlags: 0

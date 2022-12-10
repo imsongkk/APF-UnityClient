@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\LoadingScene.cs" />
     <Compile Include="Assets\Scripts\HumanController.cs" />
     <Compile Include="Assets\Scripts\MainScene.cs" />
+    <Compile Include="Assets\Scripts\InGameScene2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

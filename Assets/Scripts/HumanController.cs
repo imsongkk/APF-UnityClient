@@ -14,7 +14,6 @@ public class HumanController : MonoBehaviour
 {
     bool isLoaded = false;
     bool alreadyLoaded = false;
-    bool isOver = false;
 
     // For processing keypoints
     const int X = 0;
@@ -79,8 +78,6 @@ public class HumanController : MonoBehaviour
             alreadyLoaded = true;
             GameManager.LoadComplete();
         }
-
-        if (isOver) return;
 
         ShowKeypointStatus();
         SetHumanRotation();
@@ -167,6 +164,7 @@ public class HumanController : MonoBehaviour
         RightLeg_bottom.transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 180 - angle + refAngle);
 
         x = (GetPartX("left_hip") + GetPartX("right_hip")) / 2f;
+        x *= 2.5f;
         //print(x);
         character.transform.position = new Vector3(x, 0, 0);
     }
@@ -348,12 +346,6 @@ public class HumanController : MonoBehaviour
         if(other.gameObject.layer == LayerMask.NameToLayer("Wall")) // 벽에 충돌
         {
             GameManager.WallCollision();
-            isOver = true;
         }
-    }
-
-    public void Resume()
-    {
-        isOver = false;
     }
 }
