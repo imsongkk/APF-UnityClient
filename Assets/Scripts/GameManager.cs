@@ -35,6 +35,6 @@ public class GameManager : MonoBehaviour
 
     public static void WallCollision()
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("GameoverScene");
     }
 }

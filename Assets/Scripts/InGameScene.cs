@@ -14,7 +14,7 @@ public class InGameScene : MonoBehaviour
 
 	GameObject uiCamera;
 	int idx = 0;
-	int score = 0;
+	public int score = 0;
 
 	private void Start()
 	{
