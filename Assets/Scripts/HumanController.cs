@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // TCP stuff
 using System;
@@ -47,15 +48,14 @@ public class HumanController : MonoBehaviour
 
     string ip = "43.200.230.144";
     int port = 22222;
-    List<List<float>> keypoints_with_scores;
-    List<List<float>> keypoints_with_scores_valid;
+    public List<List<float>> keypoints_with_scores;
+    public List<List<float>> keypoints_with_scores_valid;
 
     GameObject Head, Body;
     GameObject LeftArm_top, LeftArm_bottom;
     GameObject RightArm_top, RightArm_bottom;
     GameObject LeftLeg_top, LeftLeg_bottom;
     GameObject RightLeg_top, RightLeg_bottom;
-
     GameObject character;
 
     // Start is called before the first frame update
@@ -79,7 +79,7 @@ public class HumanController : MonoBehaviour
             GameManager.LoadComplete();
         }
 
-        ShowKeypointStatus();
+        //ShowKeypointStatus();
         SetHumanRotation();
     }
 
@@ -163,20 +163,11 @@ public class HumanController : MonoBehaviour
         rotation = RightLeg_bottom.transform.localEulerAngles;
         RightLeg_bottom.transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 180 - angle + refAngle);
 
+        // Move Character
         x = (GetPartX("left_hip") + GetPartX("right_hip")) / 2f;
-        x *= 2.5f;
-        //print(x);
+        if (SceneManager.GetActiveScene().name == "InGameScene3") x *= 4f;
+        else x *= 2.5f;
         character.transform.position = new Vector3(x, 0, 0);
-    }
-
-    private void ShowKeypointStatus()
-    {
-        int count = 0;
-        foreach (List<float> keypoint in keypoints_with_scores)
-        {
-            if (keypoint[PROB] > THRESHOLD) count++;
-        }
-        //print(count + "/" + 17 + " Keypoints detected");
     }
 
     // Returns angle between given vector and x-axis
@@ -238,10 +229,66 @@ public class HumanController : MonoBehaviour
 
     private void InitTCP()
     {
-        receiveThread = new Thread(new ThreadStart(ReceiveData));
+        receiveThread = new Thread(new ThreadStart(ReceiveDataFromLocalhost));
         receiveThread.IsBackground = true;
         receiveThread.Start();
     }
+
+    private void ReceiveDataFromLocalhost()
+    {
+        try
+        {
+            int localport = 2119;
+            print("Waiting for connection");
+            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), localport);
+            listener.Start();
+
+            // Byte[] array for the transmitted data
+            Byte[] bytes = new Byte[1024];
+            while (true)
+            {
+                using (client = listener.AcceptTcpClient())
+                {
+                    print("Client connected");
+                    using (NetworkStream stream = client.GetStream())
+                    {
+                        int length;
+                        while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
+                        {
+                            if (!isLoaded)
+                            {
+                                isLoaded = true;
+                            }
+                            var incommingData = new byte[length];
+                            Array.Copy(bytes, 0, incommingData, 0, length);
+                            string clientMessage = Encoding.ASCII.GetString(incommingData);
+                            if (clientMessage.IndexOf("/") != -1)
+                            {
+                                //print(keypoints_with_scores);
+                                keypoints_with_scores = ParseData(clientMessage);
+                                bool isEveryPointValid = true;
+                                foreach (List<float> keypoint in keypoints_with_scores)
+                                {
+                                    if (keypoint[PROB] < THRESHOLD)
+                                    {
+                                        isEveryPointValid = false;
+                                        break;
+                                    }
+                                }
+                                if (isEveryPointValid) keypoints_with_scores_valid = keypoints_with_scores;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // If something bad happened and threw an exception, just print out the error
+            print(e.ToString());
+        }
+    }
+
 
     private void ReceiveData()
     {
@@ -343,9 +390,28 @@ public class HumanController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // For Game 2
         if(other.gameObject.layer == LayerMask.NameToLayer("Wall")) // 벽에 충돌
         {
             GameManager.WallCollision();
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Thing"))
+        {
+            GameManager.WallCollision();
+        }
+    }
+
+    public void ReceiveCollision(Collision collision)
+    {
+        OnCollisionEnter(collision);
+    }
+
+    public void ReceiveTrigger(Collider other)
+    {
+        OnTriggerEnter(other);
     }
 }
