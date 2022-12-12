@@ -15,6 +15,7 @@ public class HumanController : MonoBehaviour
 {
     bool isLoaded = false;
     bool alreadyLoaded = false;
+    public int finalScore = 0;
 
     // For processing keypoints
     const int X = 0;
@@ -229,7 +230,7 @@ public class HumanController : MonoBehaviour
 
     private void InitTCP()
     {
-        receiveThread = new Thread(new ThreadStart(ReceiveDataFromLocalhost));
+        receiveThread = new Thread(new ThreadStart(ReceiveData));
         receiveThread.IsBackground = true;
         receiveThread.Start();
     }
@@ -393,6 +394,18 @@ public class HumanController : MonoBehaviour
         // For Game 2
         if(other.gameObject.layer == LayerMask.NameToLayer("Wall")) // 벽에 충돌
         {
+            if (SceneManager.GetActiveScene().name == "InGameScene")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene>().score;
+            }
+            else if (SceneManager.GetActiveScene().name == "InGameScene2")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene2>().score;
+            }
+            else if (SceneManager.GetActiveScene().name == "InGameScene3")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene3>().score;
+            }
             GameManager.WallCollision();
         }
     }
@@ -401,6 +414,16 @@ public class HumanController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Thing"))
         {
+            if (SceneManager.GetActiveScene().name == "InGameScene")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene>().score;
+            } else if (SceneManager.GetActiveScene().name == "InGameScene2")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene2>().score;
+            } else if (SceneManager.GetActiveScene().name == "InGameScene3")
+            {
+                finalScore = GameObject.Find("@Scene").GetComponent<InGameScene3>().score;
+            }
             GameManager.WallCollision();
         }
     }

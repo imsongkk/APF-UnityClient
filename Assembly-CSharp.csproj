@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{8469D7FD-DBBC-6541-B135-3EAA16B4479D}</ProjectGuid>
+    <ProjectGuid>{98A43B69-D11A-57EE-CDE3-DBA800D74EFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -64,9 +64,10 @@
     <Compile Include="Assets\Scripts\LoadingScene.cs" />
     <Compile Include="Assets\Scripts\InGameScene2.cs" />
     <Compile Include="Assets\Scripts\HumanController.cs" />
-    <Compile Include="Assets\Scripts\MainScene.cs" />
-    <Compile Include="Assets\Scripts\MoveColliders.cs" />
     <Compile Include="Assets\Scripts\SendCollision.cs" />
+    <Compile Include="Assets\Scripts\MoveColliders.cs" />
+    <Compile Include="Assets\Scripts\MainScene.cs" />
+    <Compile Include="Assets\Scripts\GameOverScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

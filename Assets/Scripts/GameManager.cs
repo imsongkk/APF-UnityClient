@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
 
     public static void WallCollision()
     {
-        SceneManager.LoadScene("MainScene");
-        HumanController.GetComponents<AudioSource>()[0].Play();
+        SceneManager.LoadScene("GameoverScene");
     }
 }

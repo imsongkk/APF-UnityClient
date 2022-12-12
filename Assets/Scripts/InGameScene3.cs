@@ -19,7 +19,7 @@ public class InGameScene3 : MonoBehaviour
 	Rigidbody[] things_rb;
 	AudioSource[] sounds;
 	Text scoreText;
-	int score = 0;
+	public int score = 0;
 	public bool isSceneReady = false;
 
 	private void Start()

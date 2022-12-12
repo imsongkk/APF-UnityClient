@@ -13,7 +13,7 @@ public class InGameScene2 : MonoBehaviour
 	AudioSource source;
 	GameObject uiCamera;
 	int idx = 0;
-	float score = 0;
+	public int score = 0;
 
 	private void Start()
 	{
@@ -22,7 +22,7 @@ public class InGameScene2 : MonoBehaviour
 
 		source = GetComponent<AudioSource>();
 
-		scoreText.text = $"Score : {string.Format("{0:0.00}", score)}";
+		scoreText.text = "Score : " + score.ToString();
 	}
 
 	bool needWall = true;
@@ -37,8 +37,7 @@ public class InGameScene2 : MonoBehaviour
 			needWall = false;
 		}
 
-		score += Time.deltaTime;
-		scoreText.text = $"Score : {string.Format("{0:0.00}", score)}";
+		scoreText.text = "Score : " + score.ToString();
 		walls[idx].transform.position += new Vector3(0, 0, -3f) * Time.deltaTime;
 
 		if (walls[idx].transform.position.z <= 0f && !soundPlayed)
@@ -50,6 +49,7 @@ public class InGameScene2 : MonoBehaviour
 		if (walls[idx].transform.position.z <= -2f)
         {
 			walls[idx].transform.position = new Vector3(0, 0, -15);
+			score++;
 			needWall = true;
 			soundPlayed = false;
         }
